@@ -2,9 +2,11 @@ package com.mose.kim.todocompose.repository
 
 import com.mose.kim.todocompose.data.ToDoDao
 import com.mose.kim.todocompose.data.model.ToDoTask
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+@ViewModelScoped // repository의 lifetime이 viewmodel과 같게
 class TodoRepository
 @Inject constructor(private val toDoDao: ToDoDao){
     val getAllTasks: Flow<List<ToDoTask>> = toDoDao.getAllTasks()
