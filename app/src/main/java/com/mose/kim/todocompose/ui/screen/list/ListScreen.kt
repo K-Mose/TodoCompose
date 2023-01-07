@@ -8,23 +8,33 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.mose.kim.todocompose.R
 import com.mose.kim.todocompose.ui.theme.fabBackgroundColor
+import com.mose.kim.todocompose.ui.viewmodel.SharedViewModel
+import com.mose.kim.todocompose.util.SearchAppBarState
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ListScreen(
-    navigationToTaskScreen: (Int) -> Unit
+    navigationToTaskScreen: (Int) -> Unit,
+    sharedViewModel: SharedViewModel
 ) {
+
+    //
+    val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
+    val searchTextState: String by sharedViewModel.searchTextState
+
     Scaffold(
         topBar = {
             ListAppBar(
-                onSearchClicked = {},
-                onSortClicked = {},
-                onDeleteClicked = {}
+                // ViewModel 값 변경이 관찰되면 re-compose
+                sharedViewModel = sharedViewModel,
+                searchAppBarState = searchAppBarState,
+                searchTextState = searchTextState
             )
         },
         content = {},
@@ -50,10 +60,4 @@ fun ListFab(
             tint = Color.White
         )
     }
-}
-
-@Composable
-@Preview
-private fun ListScreenPreview() {
-    ListScreen(navigationToTaskScreen = {})
 }
