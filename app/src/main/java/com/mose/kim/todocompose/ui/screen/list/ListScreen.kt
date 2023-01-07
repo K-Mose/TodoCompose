@@ -37,7 +37,9 @@ fun ListScreen(
                 searchTextState = searchTextState
             )
         },
-        content = {},
+        content = {
+                  ListContent()
+        },
         floatingActionButton = {
             ListFab(navigationToTaskScreen = navigationToTaskScreen)
         }
@@ -50,6 +52,7 @@ fun ListFab(
 ) {
     FloatingActionButton(
         onClick = {
+            // taskId = -1 : todoTask 생성 페이지
             navigationToTaskScreen(-1)
         },
         backgroundColor = MaterialTheme.colors.fabBackgroundColor
