@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.mose.kim.todocompose.R
+import com.mose.kim.todocompose.data.model.ToDoTask
 import com.mose.kim.todocompose.ui.theme.fabBackgroundColor
 import com.mose.kim.todocompose.ui.viewmodel.SharedViewModel
 import com.mose.kim.todocompose.util.SearchAppBarState
