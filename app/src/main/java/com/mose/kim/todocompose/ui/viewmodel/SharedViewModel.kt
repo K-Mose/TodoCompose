@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mose.kim.todocompose.data.model.ToDoTask
 import com.mose.kim.todocompose.repository.TodoRepository
+import com.mose.kim.todocompose.util.RequestState
 import com.mose.kim.todocompose.util.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,14 +22,23 @@ class SharedViewModel @Inject constructor(
     val searchAppBarState: MutableState<SearchAppBarState> = mutableStateOf(SearchAppBarState.CLOSED)
     val searchTextState: MutableState<String> = mutableStateOf("")
 
-    private val _allTasks = MutableStateFlow<List<ToDoTask>>(emptyList())
-    val allTask: StateFlow<List<ToDoTask>> = _allTasks
+    // 초기값이 emptyList가 들어가기 때문에 초기 화면에 EmptyContent가 출력됨. Sealed class로 변경
+    private val _allTasks =
+        MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
+    val allTask: StateFlow<RequestState<List<ToDoTask>>> = _allTasks
 
     fun getAllTasks() {
-        viewModelScope.launch {
-            repository.getAllTasks.collect {
-                _allTasks.value = it
+        // 함수 실행 시 로딩 상태로 변경
+        _allTasks.value = RequestState.Loading
+        try {
+            viewModelScope.launch {
+                repository.getAllTasks.collect {
+                    // 디비에서 값 가져오기 성공 시 Success로 데이터 리스트 넘김
+                    _allTasks.value = RequestState.Success(it)
+                }
             }
+        } catch (e: Exception) {
+            _allTasks.value = RequestState.Error(e)
         }
     }
 

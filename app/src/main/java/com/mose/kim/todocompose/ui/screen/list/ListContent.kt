@@ -18,17 +18,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mose.kim.todocompose.data.model.Priority
 import com.mose.kim.todocompose.data.model.ToDoTask
 import com.mose.kim.todocompose.ui.theme.*
+import com.mose.kim.todocompose.util.RequestState
 
 @Composable
 fun ListContent(
-    tasks: List<ToDoTask>,
+    tasks: RequestState<List<ToDoTask>>,
     navigateToTaskScreen: (taskId: Int) -> Unit
 ) {
-    if(tasks.isEmpty()) {
-        // collectAsState에서
-        EmptyContent()
-    } else {
-        DisplayTasks(tasks = tasks, navigateToTaskScreen = navigateToTaskScreen)
+    if(tasks is RequestState.Success) {
+        // data == List
+        if(tasks.data.isEmpty()) {
+            // collectAsState에서
+            EmptyContent()
+        } else {
+            DisplayTasks(tasks = tasks.data, navigateToTaskScreen = navigateToTaskScreen)
+        }
     }
 }
 
