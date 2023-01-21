@@ -25,7 +25,7 @@ class SharedViewModel @Inject constructor(
     // 초기값이 emptyList가 들어가기 때문에 초기 화면에 EmptyContent가 출력됨. Sealed class로 변경
     private val _allTasks =
         MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
-    val allTask: StateFlow<RequestState<List<ToDoTask>>> = _allTasks
+    val allTasks: StateFlow<RequestState<List<ToDoTask>>> = _allTasks
 
     fun getAllTasks() {
         // 함수 실행 시 로딩 상태로 변경

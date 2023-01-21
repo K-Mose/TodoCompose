@@ -1,7 +1,6 @@
 package com.mose.kim.todocompose.ui.screen.list
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -14,9 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.mose.kim.todocompose.R
-import com.mose.kim.todocompose.data.model.ToDoTask
 import com.mose.kim.todocompose.ui.theme.fabBackgroundColor
 import com.mose.kim.todocompose.ui.viewmodel.SharedViewModel
 import com.mose.kim.todocompose.util.SearchAppBarState
@@ -34,7 +31,7 @@ fun ListScreen(
     }
 
     // collectAsState를 통해서 allTasks의 값들을 최신상태로 유지
-    val allTasks by sharedViewModel.allTask.collectAsState() // collectAsState - StateFlow를 통해 값을 가져오고 State를 통해 최신의 데이터를 가져옴
+    val allTasks by sharedViewModel.allTasks.collectAsState() // collectAsState - StateFlow를 통해 값을 가져오고 State를 통해 최신의 데이터를 가져옴
     //
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
