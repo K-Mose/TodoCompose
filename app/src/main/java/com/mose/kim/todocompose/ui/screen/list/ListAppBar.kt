@@ -1,5 +1,6 @@
 package com.mose.kim.todocompose.ui.screen.list
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -58,7 +59,10 @@ fun ListAppBar(
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.CLOSED
                     sharedViewModel.searchTextState.value = ""
                 },
-                onCloseClicked = {}
+                onCloseClicked = {
+                    sharedViewModel.searchAppBarState.value = SearchAppBarState.CLOSED
+                    sharedViewModel.searchTextState.value = ""
+                }
             )
         }
     }
@@ -84,7 +88,7 @@ fun DefaultListAppBar(
                 onDeleteClicked = onDeleteClicked
             )
         },
-        backgroundColor = MaterialTheme.colors.primary
+        backgroundColor = MaterialTheme.colors.topAppBarBackgroundColor
     )
 }
 
@@ -290,7 +294,7 @@ fun SearchAppBar (
 
 
 @Composable
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun DefaultAppBarPreview() {
     DefaultListAppBar(
         onSearchClicked = {},
