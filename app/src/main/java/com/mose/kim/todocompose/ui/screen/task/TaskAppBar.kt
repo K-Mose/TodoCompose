@@ -14,15 +14,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mose.kim.todocompose.R
 import com.mose.kim.todocompose.data.model.Priority
 import com.mose.kim.todocompose.data.model.ToDoTask
+import com.mose.kim.todocompose.ui.screen.list.EmptyContent
 import com.mose.kim.todocompose.ui.theme.topAppBarBackgroundColor
 import com.mose.kim.todocompose.ui.theme.topAppBarContentColor
 import com.mose.kim.todocompose.util.Action
 
 @Composable
 fun TaskAppBar(
+    selectedTask: ToDoTask?,
     navigateToListScreen: (Action) -> Unit
 ) {
-    NewTaskAppBar(navigateToListScreen = navigateToListScreen)
+    selectedTask?.let {
+        ExistingTaskAppBar(
+            selectedTask = it,
+            navigateToListScreen = navigateToListScreen
+        )
+    } ?: NewTaskAppBar(navigateToListScreen = navigateToListScreen)
+
 }
 
 @Composable
