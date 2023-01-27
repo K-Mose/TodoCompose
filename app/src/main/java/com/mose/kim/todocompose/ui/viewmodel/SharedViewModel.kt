@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mose.kim.todocompose.data.model.Priority
 import com.mose.kim.todocompose.data.model.ToDoTask
 import com.mose.kim.todocompose.repository.TodoRepository
 import com.mose.kim.todocompose.util.RequestState
@@ -18,6 +19,11 @@ import javax.inject.Inject
 class SharedViewModel @Inject constructor(
     private val repository: TodoRepository
 ) : ViewModel() {
+
+    val id: MutableState<Int> = mutableStateOf(0)
+    val title: MutableState<String> = mutableStateOf("")
+    val description: MutableState<String> = mutableStateOf("")
+    val priority: MutableState<Priority> = mutableStateOf(Priority.LOW)
 
     val searchAppBarState: MutableState<SearchAppBarState> = mutableStateOf(SearchAppBarState.CLOSED)
     val searchTextState: MutableState<String> = mutableStateOf("")
@@ -50,8 +56,26 @@ class SharedViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getSelectedTask(taskId = taskId).collect { task ->
                 _selectedTask.value = task
+                updateTaskField(task)
             }
         }
+    }
+
+    // TaskScreen에서의 입력값 적용
+    private fun updateTaskField(selectedTask: ToDoTask?) {
+        selectedTask?.let {
+            id.value = it.id
+            title.value = it.title
+            description.value = it.description
+            priority.value = it.priority
+        } ?: setEmptyTask()
+    }
+
+    private fun setEmptyTask() {
+        id.value = 0
+        title.value = ""
+        description.value = ""
+        priority.value = Priority.LOW
     }
 
 }

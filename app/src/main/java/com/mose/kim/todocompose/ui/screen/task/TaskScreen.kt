@@ -8,13 +8,20 @@ import androidx.compose.runtime.*
 import com.mose.kim.todocompose.components.PriorityDropDown
 import com.mose.kim.todocompose.data.model.Priority
 import com.mose.kim.todocompose.data.model.ToDoTask
+import com.mose.kim.todocompose.ui.viewmodel.SharedViewModel
 import com.mose.kim.todocompose.util.Action
 
 @Composable
 fun TaskScreen(
     selectedTask: ToDoTask?,
+    sharedViewModel: SharedViewModel,
     navigateToListScreen: (Action) -> Unit
 ) {
+    // sharedViewModel에서 값 관찰 후 변경 적용
+    val title: String by sharedViewModel.title
+    val description: String by sharedViewModel.description
+    val priority: Priority by sharedViewModel.priority
+
     Scaffold(
         topBar = {
             TaskAppBar(
@@ -23,17 +30,21 @@ fun TaskScreen(
             )
         },
         content = {
-            it
-            var tempPriority by remember {
-                mutableStateOf(selectedTask?.priority ?: Priority.NONE)
-            }
+            Log.i("PADDING :: " , "$it")
+
             TaskContent(
-                title = selectedTask?.title ?: "",
-                onTitleChange = {},
-                description = selectedTask?.description ?: "",
-                onDescriptionChange = {},
-                priority = tempPriority,
-                onPrioritySelected = {}
+                title = title,
+                onTitleChange = { title ->
+                    sharedViewModel.title.value = title
+                },
+                description = description,
+                onDescriptionChange = { description ->
+                    sharedViewModel.description.value = description
+                },
+                priority = priority,
+                onPrioritySelected = { selectedPriority ->
+                    sharedViewModel.priority.value = selectedPriority
+                }
             )
         }
     )
