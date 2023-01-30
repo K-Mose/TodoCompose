@@ -1,10 +1,13 @@
 package com.mose.kim.todocompose.ui.screen.task
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import com.mose.kim.todocompose.components.PriorityDropDown
 import com.mose.kim.todocompose.data.model.Priority
 import com.mose.kim.todocompose.data.model.ToDoTask
@@ -22,16 +25,26 @@ fun TaskScreen(
     val description: String by sharedViewModel.description
     val priority: Priority by sharedViewModel.priority
 
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             TaskAppBar(
                 selectedTask = selectedTask,
-                navigateToListScreen = navigateToListScreen
+                navigateToListScreen = { action ->
+                    if(action == Action.NO_ACTION) {
+                        navigateToListScreen(action)
+                    } else {
+                        if(sharedViewModel.validateFields()) {
+                            navigateToListScreen(action)
+                        } else {
+                            displayToast(context = context)
+                        }
+                    }
+                }
             )
         },
-        content = {
-            Log.i("PADDING :: " , "$it")
-
+        content = { paddingValue ->
             TaskContent(
                 title = title,
                 onTitleChange = { title ->
@@ -48,4 +61,12 @@ fun TaskScreen(
             )
         }
     )
+}
+
+fun displayToast(context: Context) {
+    Toast.makeText(
+        context,
+        "Fields Empty.",
+        Toast.LENGTH_SHORT
+    ).show()
 }
