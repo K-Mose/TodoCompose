@@ -30,11 +30,15 @@ fun ListScreen(
         sharedViewModel.getAllTasks()
     }
 
+    val action by sharedViewModel.action
+
     // collectAsState를 통해서 allTasks의 값들을 최신상태로 유지
     val allTasks by sharedViewModel.allTasks.collectAsState() // collectAsState - StateFlow를 통해 값을 가져오고 State를 통해 최신의 데이터를 가져옴
     //
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
+
+    sharedViewModel.handleDatabaseAction(action = action)
 
     Scaffold(
         topBar = {

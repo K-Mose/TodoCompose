@@ -1,5 +1,6 @@
 package com.mose.kim.todocompose.ui.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -7,10 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.mose.kim.todocompose.data.model.Priority
 import com.mose.kim.todocompose.data.model.ToDoTask
 import com.mose.kim.todocompose.repository.TodoRepository
+import com.mose.kim.todocompose.util.Action
 import com.mose.kim.todocompose.util.Constants.MAX_TITLE_LENGTH
 import com.mose.kim.todocompose.util.RequestState
 import com.mose.kim.todocompose.util.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,6 +23,8 @@ import javax.inject.Inject
 class SharedViewModel @Inject constructor(
     private val repository: TodoRepository
 ) : ViewModel() {
+
+    val action: MutableState<Action> = mutableStateOf(Action.NO_ACTION)
 
     val id: MutableState<Int> = mutableStateOf(0)
     val title: MutableState<String> = mutableStateOf("")
@@ -62,6 +67,45 @@ class SharedViewModel @Inject constructor(
         }
     }
 
+    private fun addTask() {
+        Log.i("GET_TASK", "addTask ${title.value} / ${description.value} / ${priority.value.name}")
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.i("GET_TASK", "addTask2 ${title.value} / ${description.value} / ${priority.value.name}")
+            val todoTask = ToDoTask(
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            repository.addTask(toDoTask = todoTask)
+        }
+    }
+
+    fun handleDatabaseAction(action: Action) {
+        Log.i("GET_TASK", "handleDatabaseAction ${title.value} / ${description.value} / ${priority.value.name}")
+        Log.i("sharedViewModel-ACTION :: ", "${action.name}")
+        when(action) {
+            Action.ADD -> {
+                addTask()
+            }
+            Action.UPDATE -> {
+
+            }
+            Action.DELETE -> {
+
+            }
+            Action.DELETE_ALL -> {
+
+            }
+            Action.UNDO -> {
+
+            }
+            else -> {
+
+            }
+        }
+        this.action.value = Action.NO_ACTION
+    }
+
     // TaskScreen에서의 입력값 적용
     private fun updateTaskField(selectedTask: ToDoTask?) {
         selectedTask?.let {
@@ -73,6 +117,7 @@ class SharedViewModel @Inject constructor(
     }
 
     private fun setEmptyTask() {
+        Log.i("GET_TASK", "setEmptyTaskK ${title.value} / ${description.value} / ${priority.value.name}")
         id.value = 0
         title.value = ""
         description.value = ""
