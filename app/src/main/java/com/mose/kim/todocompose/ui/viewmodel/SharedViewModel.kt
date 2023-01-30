@@ -68,9 +68,7 @@ class SharedViewModel @Inject constructor(
     }
 
     private fun addTask() {
-        Log.i("GET_TASK", "addTask ${title.value} / ${description.value} / ${priority.value.name}")
         viewModelScope.launch(Dispatchers.IO) {
-            Log.i("GET_TASK", "addTask2 ${title.value} / ${description.value} / ${priority.value.name}")
             val todoTask = ToDoTask(
                 title = title.value,
                 description = description.value,
@@ -81,8 +79,6 @@ class SharedViewModel @Inject constructor(
     }
 
     fun handleDatabaseAction(action: Action) {
-        Log.i("GET_TASK", "handleDatabaseAction ${title.value} / ${description.value} / ${priority.value.name}")
-        Log.i("sharedViewModel-ACTION :: ", "${action.name}")
         when(action) {
             Action.ADD -> {
                 addTask()
@@ -117,7 +113,6 @@ class SharedViewModel @Inject constructor(
     }
 
     private fun setEmptyTask() {
-        Log.i("GET_TASK", "setEmptyTaskK ${title.value} / ${description.value} / ${priority.value.name}")
         id.value = 0
         title.value = ""
         description.value = ""

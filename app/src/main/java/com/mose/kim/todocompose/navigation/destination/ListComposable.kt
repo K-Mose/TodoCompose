@@ -24,10 +24,8 @@ fun NavGraphBuilder.listComposable(
     ) { navBackStackEntry ->
         //
         val action = navBackStackEntry.arguments?.getString(LIST_ARGUMENT_KEY).toAction()
-        Log.i("listComposable1-ACTION :: ", "${navBackStackEntry.arguments?.getString(LIST_ARGUMENT_KEY)} | ${action.name}")
         //
         LaunchedEffect(key1 = action) {
-            Log.i("listComposable2-ACTION :: ", "${action.name}")
             sharedViewModel.action.value = action
         }
 
