@@ -1,12 +1,11 @@
 package com.mose.kim.todocompose.components
 
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import android.app.AlertDialog
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import com.mose.kim.todocompose.R
 
 @Composable
@@ -44,7 +43,7 @@ fun DisplayAlertDialog(
                 }
             },
             dismissButton = {
-                Button(
+                OutlinedButton(
                     onClick = { closeDialog()}
                 ) {
                     Text(text = stringResource(R.string.no))
@@ -52,5 +51,18 @@ fun DisplayAlertDialog(
             },
             onDismissRequest = {closeDialog()}
         )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewAlertDialog() {
+    DisplayAlertDialog(
+        title = "asd",
+        message = "qwe",
+        openDialog = true,
+        closeDialog = { /*TODO*/ }
+    ) {
+
     }
 }
