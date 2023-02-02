@@ -16,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -52,6 +53,27 @@ class SharedViewModel @Inject constructor(
         } catch (e: Exception) {
             _allTasks.value = RequestState.Error(e)
         }
+    }
+
+    private val _searchTasks =
+        MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
+    val searchTasks: StateFlow<RequestState<List<ToDoTask>>> = _searchTasks
+
+    fun searchDatabase(searchQuery: String) {
+        // 함수 실행 시 로딩 상태로 변경
+        _searchTasks.value = RequestState.Loading
+        try {
+            viewModelScope.launch {
+                repository.searchDatabase(searchQuery = "%$searchQuery%")
+                    .collect { searchTasks ->
+                        _searchTasks.value = RequestState.Success(searchTasks)
+                    }
+
+            }
+        } catch (e: Exception) {
+            _searchTasks.value = RequestState.Error(e)
+        }
+        searchAppBarState.value = SearchAppBarState.TRIGGERED
     }
 
     private val _selectedTask =

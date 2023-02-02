@@ -12,13 +12,12 @@ import com.mose.kim.todocompose.ui.theme.fabBackgroundColor
 import com.mose.kim.todocompose.ui.viewmodel.SharedViewModel
 import com.mose.kim.todocompose.util.Action
 import com.mose.kim.todocompose.util.SearchAppBarState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ListScreen(
-    navigationToTaskScreen: (Int) -> Unit,
+    navigateToTaskScreen: (Int) -> Unit,
     sharedViewModel: SharedViewModel
 ) {
     // LaunchedEfffect - 컴포즤션이 시작되면 조건(key..)에 맞게 실행되며 범위 내에서 안전하게 종료
@@ -31,6 +30,9 @@ fun ListScreen(
 
     // collectAsState를 통해서 allTasks의 값들을 최신상태로 유지
     val allTasks by sharedViewModel.allTasks.collectAsState() // collectAsState - StateFlow를 통해 값을 가져오고 State를 통해 최신의 데이터를 가져옴
+
+    val searchTasks by sharedViewModel.searchTasks.collectAsState()
+
     //
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
@@ -59,12 +61,14 @@ fun ListScreen(
         },
         content = {
                   ListContent(
-                      allTasks,
-                      navigationToTaskScreen
+                      allTasks = allTasks,
+                      searchTasks = searchTasks,
+                      searchAppBarState = searchAppBarState,
+                      navigateToTaskScreen = navigateToTaskScreen
                   )
         },
         floatingActionButton = {
-            ListFab(navigationToTaskScreen = navigationToTaskScreen)
+            ListFab(navigationToTaskScreen = navigateToTaskScreen)
         }
     )
 }

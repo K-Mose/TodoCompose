@@ -1,6 +1,5 @@
 package com.mose.kim.todocompose.navigation.destination
 
-import android.util.Log
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -31,7 +30,7 @@ fun NavGraphBuilder.listComposable(
 
 
         ListScreen(
-            navigationToTaskScreen = navigateToTaskScreen,
+            navigateToTaskScreen = navigateToTaskScreen,
             sharedViewModel = sharedViewModel
         )
     }

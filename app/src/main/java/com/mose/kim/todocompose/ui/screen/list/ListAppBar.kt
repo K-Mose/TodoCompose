@@ -42,7 +42,7 @@ fun ListAppBar(
             DefaultListAppBar(
                 onSearchClicked = {
                     // 클릭 시 SearchAppBarState 변경되며, ViewModel에서 관찰.
-                                  sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
+                    sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
                 },
                 onSortClicked = {},
                 onDeleteClicked = {}
@@ -56,8 +56,7 @@ fun ListAppBar(
                 },
                 onSearchClicked = {
                     // 상태 변경과 값 초기화
-                    sharedViewModel.searchAppBarState.value = SearchAppBarState.CLOSED
-                    sharedViewModel.searchTextState.value = ""
+                    sharedViewModel.searchDatabase(it)
                 },
                 onCloseClicked = {
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.CLOSED

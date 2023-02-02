@@ -19,20 +19,43 @@ import com.mose.kim.todocompose.data.model.Priority
 import com.mose.kim.todocompose.data.model.ToDoTask
 import com.mose.kim.todocompose.ui.theme.*
 import com.mose.kim.todocompose.util.RequestState
+import com.mose.kim.todocompose.util.SearchAppBarState
 
 @Composable
 fun ListContent(
-    tasks: RequestState<List<ToDoTask>>,
+    allTasks: RequestState<List<ToDoTask>>,
+    searchTasks: RequestState<List<ToDoTask>>,
+    searchAppBarState: SearchAppBarState,
     navigateToTaskScreen: (taskId: Int) -> Unit
 ) {
-    if(tasks is RequestState.Success) {
-        // data == List
-        if(tasks.data.isEmpty()) {
-            // collectAsState에서
-            EmptyContent()
-        } else {
-            DisplayTasks(tasks = tasks.data, navigateToTaskScreen = navigateToTaskScreen)
+    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
+        if (searchTasks is RequestState.Success) {
+            HandleListContent(
+                tasks = searchTasks.data,
+                navigateToTaskScreen = navigateToTaskScreen
+            )
         }
+    } else {
+        if (allTasks is RequestState.Success) {
+            HandleListContent(
+                tasks = allTasks.data,
+                navigateToTaskScreen = navigateToTaskScreen
+            )
+        }
+    }
+}
+
+@Composable
+fun HandleListContent (
+    tasks: List<ToDoTask>,
+    navigateToTaskScreen: (taskId: Int) -> Unit
+) {
+    // data == List
+    if(tasks.isEmpty()) {
+        // collectAsState에서
+        EmptyContent()
+    } else {
+        DisplayTasks(tasks = tasks, navigateToTaskScreen = navigateToTaskScreen)
     }
 }
 
