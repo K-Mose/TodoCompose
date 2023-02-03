@@ -46,7 +46,9 @@ fun ListAppBar(
                     // 클릭 시 SearchAppBarState 변경되며, ViewModel에서 관찰.
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
                 },
-                onSortClicked = {},
+                onSortClicked = {
+                    sharedViewModel.persistSortState(it)
+                },
                 onDeleteAllConfirmed = {
                     sharedViewModel.action.value = Action.DELETE_ALL
                 }
@@ -157,14 +159,6 @@ fun SortAction(
                 }
             ) {
                 PriorityItem(priority = Priority.LOW)
-            }
-            DropdownMenuItem(
-                onClick = {
-                    expanded = false
-                    onSortClicked(Priority.MEDIUM)
-                }
-            ) {
-                PriorityItem(priority = Priority.MEDIUM)
             }
             DropdownMenuItem(
                 onClick = {

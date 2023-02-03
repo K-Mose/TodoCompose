@@ -24,14 +24,18 @@ fun ListScreen(
     // key 값에 state가 들어가 상태에 따라 트리거로 작동시킴
     LaunchedEffect(key1 = true) {
         sharedViewModel.getAllTasks()
+        sharedViewModel.readSortState()
     }
 
     val action by sharedViewModel.action
 
     // collectAsState를 통해서 allTasks의 값들을 최신상태로 유지
     val allTasks by sharedViewModel.allTasks.collectAsState() // collectAsState - StateFlow를 통해 값을 가져오고 State를 통해 최신의 데이터를 가져옴
-
     val searchTasks by sharedViewModel.searchTasks.collectAsState()
+    val sortState by sharedViewModel.sortState.collectAsState()
+
+    val lowPriorityTasks by sharedViewModel.lowPriorityTasks.collectAsState()
+    val highPriorityTasks by sharedViewModel.highPriorityTasks.collectAsState()
 
     //
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
@@ -63,6 +67,9 @@ fun ListScreen(
                   ListContent(
                       allTasks = allTasks,
                       searchTasks = searchTasks,
+                      lowPriorityTasks = lowPriorityTasks,
+                      highPriorityTasks = highPriorityTasks,
+                      sortState = sortState,
                       searchAppBarState = searchAppBarState,
                       navigateToTaskScreen = navigateToTaskScreen
                   )

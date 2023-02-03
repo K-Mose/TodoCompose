@@ -2,8 +2,10 @@ package com.mose.kim.todocompose.ui.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.viewModelScope
 import com.mose.kim.todocompose.data.model.Priority
 import com.mose.kim.todocompose.data.model.ToDoTask
@@ -14,10 +16,9 @@ import com.mose.kim.todocompose.util.Constants.MAX_TITLE_LENGTH
 import com.mose.kim.todocompose.util.RequestState
 import com.mose.kim.todocompose.util.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -76,6 +77,43 @@ class SharedViewModel @Inject constructor(
             _searchTasks.value = RequestState.Error(e)
         }
         searchAppBarState.value = SearchAppBarState.TRIGGERED
+    }
+
+    // stateIn으로 Flow에서 StateFlow로 변환
+    val lowPriorityTasks: StateFlow<List<ToDoTask>> = repository.sortByLowPriority.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyList()
+    )
+    val highPriorityTasks: StateFlow<List<ToDoTask>> = repository.sortByHighPriority.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyList()
+    )
+
+    private val _sortState =
+        MutableStateFlow<RequestState<Priority>>(RequestState.Idle)
+    val sortState: StateFlow<RequestState<Priority>> = _sortState
+
+    fun persistSortState(priority: Priority) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.persistSortState(priority = priority)
+        }
+    }
+
+    fun readSortState() {
+        _sortState.value = RequestState.Loading
+        try {
+            viewModelScope.launch {
+                dataStoreRepository.readSortState
+                    .map { Priority.valueOf(it) }
+                    .collect {
+                        _sortState.value = RequestState.Success(it)
+                    }
+            }
+        } catch (e: Exception) {
+            _sortState.value = RequestState.Error(e)
+        }
     }
 
     private val _selectedTask =
