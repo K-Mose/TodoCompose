@@ -53,16 +53,3 @@ fun DisplayAlertDialog(
         )
     }
 }
-
-@Preview
-@Composable
-fun PreviewAlertDialog() {
-    DisplayAlertDialog(
-        title = "asd",
-        message = "qwe",
-        openDialog = true,
-        closeDialog = { /*TODO*/ }
-    ) {
-
-    }
-}
