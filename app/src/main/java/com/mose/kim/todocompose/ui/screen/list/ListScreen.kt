@@ -71,6 +71,11 @@ fun ListScreen(
                       highPriorityTasks = highPriorityTasks,
                       sortState = sortState,
                       searchAppBarState = searchAppBarState,
+                      onSwipeToDelete = { action, task ->
+                          sharedViewModel.action.value = action
+                          // undo 하기 위해서
+                          sharedViewModel.updateTaskField(selectedTask = task)
+                      },
                       navigateToTaskScreen = navigateToTaskScreen
                   )
         },
