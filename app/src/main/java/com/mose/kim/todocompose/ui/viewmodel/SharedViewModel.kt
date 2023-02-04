@@ -131,7 +131,7 @@ class SharedViewModel @Inject constructor(
     private fun addTask() {
         viewModelScope.launch(Dispatchers.IO) {
             val todoTask = ToDoTask(
-                id = (id.value.let { if(it > 0)  it else 0 }),
+//                id = (id.value.let { if(it > 0)  it else 0 }),
                 title = title.value,
                 description = description.value,
                 priority = priority.value
@@ -191,15 +191,12 @@ class SharedViewModel @Inject constructor(
 
             }
         }
-        Log.i("HANDLE::","${action.name} to")
         this.action.value = Action.NO_ACTION
-        Log.i("HANDLE::",action.name)
     }
 
     // TaskScreen에서의 입력값 적용
     fun updateTaskField(selectedTask: ToDoTask?) {
         selectedTask?.let {
-            Log.i("UPDATETASK::", "$it")
             id.value = it.id
             title.value = it.title
             description.value = it.description

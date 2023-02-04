@@ -1,6 +1,11 @@
 package com.mose.kim.todocompose.ui.screen.list
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.mose.kim.todocompose.data.model.Priority
 import com.mose.kim.todocompose.R
 import com.mose.kim.todocompose.data.model.ToDoTask
@@ -26,6 +32,9 @@ import com.mose.kim.todocompose.ui.theme.*
 import com.mose.kim.todocompose.util.Action
 import com.mose.kim.todocompose.util.RequestState
 import com.mose.kim.todocompose.util.SearchAppBarState
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ListContent(
@@ -110,11 +119,15 @@ fun DisplayTasks(
                 task.id
             }
         ) { task ->
-            val dismissState = rememberDismissState()
+            var dismissState = rememberDismissState()
             val dismissDirection = dismissState.dismissDirection
             var isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
             if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
-                onSwipeToDelete(Action.DELETE, task)
+                val scope = rememberCoroutineScope()
+                scope.launch {
+                    delay(300)
+                    onSwipeToDelete(Action.DELETE, task)
+                }
             }
             val degrees by animateFloatAsState(
                 if (dismissState.targetValue == DismissValue.Default)
@@ -122,18 +135,39 @@ fun DisplayTasks(
                 else
                     -45f
             )
-            SwipeToDismiss(
-                state = dismissState,
-                directions = setOf(DismissDirection.EndToStart),
-                dismissThresholds = { FractionalThreshold(0.2f)},
-                background = { RedBackground(degrees = degrees)},
-                dismissContent = {
-                    TaskItem(
-                        toDoTask = task,
-                        navigateToTaskScreen = navigateToTaskScreen
+
+            var itemAppeared by remember { mutableStateOf(false)}
+            LaunchedEffect(key1 = true) {
+                itemAppeared = true
+            }
+
+            AnimatedVisibility(
+                visible = itemAppeared && !isDismissed,
+                enter = expandVertically(
+                    animationSpec = tween(
+                        durationMillis = 300
                     )
-                }
-            )
+                ),
+                exit = shrinkVertically(
+                    animationSpec = tween(
+                        durationMillis = 300
+                    )
+                )
+            ) {
+                SwipeToDismiss(
+                    state = dismissState,
+                    directions = setOf(DismissDirection.EndToStart),
+                    dismissThresholds = { FractionalThreshold(0.2f)},
+                    background = { RedBackground(degrees = degrees)},
+                    dismissContent = {
+                        TaskItem(
+                            toDoTask = task,
+                            navigateToTaskScreen = navigateToTaskScreen
+                        )
+                    }
+                )
+            }
+
         }
     }
 }
@@ -225,4 +259,12 @@ fun TaskItemPreview() {
     ),
         navigateToTaskScreen = {}
     )
+}
+
+@Preview
+@Composable
+fun RedBackgroundPreview() {
+    Column(modifier = Modifier.height(100.dp)) {
+        RedBackground(degrees = 0f)
+    }
 }
