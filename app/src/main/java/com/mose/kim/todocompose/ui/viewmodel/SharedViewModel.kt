@@ -131,7 +131,7 @@ class SharedViewModel @Inject constructor(
     private fun addTask() {
         viewModelScope.launch(Dispatchers.IO) {
             val todoTask = ToDoTask(
-//                id = (id.value.let { if(it > 0)  it else 0 }),
+                id = (id.value.let { if(it > 0)  it else 0 }),
                 title = title.value,
                 description = description.value,
                 priority = priority.value
